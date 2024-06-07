@@ -1,105 +1,104 @@
-import React from "react";
-import { View,Text,TextInput,TouchableOpacity, StyleSheet,Dimensions, FlatList} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TextInput,TouchableOpacity, FlatList } from "react-native";
+import dibujar from "./Styles";
+import RenderItem from "./RenderItem";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { json } from "react-router-dom";
 
-const dibujar=StyleSheet.create({
-  contenedor:{
-    width:'100%',
-    padding:20,
-  },
-  titulo:{
-    fontSize:30,
-    color:'white',
+const tareas = [
 
-  },
-  txtimp:{
-    borderColor:'white',
-    borderWidth:1,
-    borderRadius:15,
-    width:Dimensions.get("screen").width*0.6,
-    paddingLeft:"0.025%",
-  },
-  text:{
-    fontSize:17,
-    color:'white',
-  },
-  wtext:{
-    fontSize:17,
-    color:'black',
-  },
-  impcontenedor:{
-    marginTop:20,
-    flexDirection:'row',
-    justifyContent:"space-between",
-  },
-  boton:{
-    width:Dimensions.get("screen").width*0.25,
-    backgroundColor:"#F8EBAE",
-    justifyContent:"center",
-    alignItems: "center",
-    borderRadius:15,
-  },
-  tareasconten:{
-    paddingVertical:20,
-    borderBottomColor: "white",
-    borderBottomWidth:1,    
-  },
-  botontitu:{
-    width:100,
-  }
-})
-
-const Taareas = [
-  {
-    titulo:"Lavar Baño",
-    estado: false,
-    fecha: new Date(),
-  },
-  {
-    titulo:"Lavar Loza",
-    estado: false,
-    fecha: new Date(),
-  },
-  {
-    titulo:"Lavar Ropa",
-    estado: false,
-    fecha: new Date(),
-  },
 ]
 
-interface Task{
-  titulo:String,
+ export interface Task{
+  Titulo:string,
   estado:boolean,
-  fecha:Date
+  fecha: Date
 }
 
-function renderItem({item}:{item:Task}){
-  return(
-    <View style={dibujar.tareasconten}>
-      <TouchableOpacity style={dibujar.botontitu}>
-        <Text style={dibujar.text}>{item.titulo}</Text>
-      </TouchableOpacity>
-      <Text style={dibujar.text}>{item.fecha.toDateString()}</Text>
-    </View>  
-    )
-}
 
 export default function App(){
+  const [text,setText] = useState('')
+  const [tareas,setTask] = useState<Task[]>([])
+
+  const storeData = async (value:Task[])=>{
+    try{
+      await AsyncStorage.setItem('my-key',JSON.stringify(value));
+    }
+    catch(error){
+
+    }
+  }
+
+  const getData = async()=>{
+    try{
+      const value = await AsyncStorage.getItem('my-key');
+      if(value!==null){
+        const tasksLocal=JSON.parse(value)
+        setTask(tasksLocal)
+      }
+    }
+    catch(error){
+
+    }
+  }
+
+  useEffect(()=>{
+    getData()
+  },[])
+
+  const addTask = ()=>{
+    const tmp=[...tareas]
+    const newTask ={
+      Titulo:text,
+      estado:false,
+      fecha: new Date()
+    }
+    tmp.push(newTask)
+    setTask(tmp)
+    storeData(tmp)
+    setText('')
+  }
+  const markdone=(tarea:Task)=>{
+    const tmp = [...tareas]
+    const index = tmp.findIndex(k=>k.Titulo===tarea.Titulo)
+    const t = tmp[index]
+    t.estado =! t.estado
+    setTask(tmp)
+    storeData(tmp)
+  }
+  const deleteFunction=(tarea:Task)=>{
+    const tmp = [...tareas]
+    const index = tmp.findIndex(k=>k.Titulo===tarea.Titulo)
+    tmp.splice(index,1)
+    setTask(tmp)
+    storeData(tmp)
+  }
   return(
-    <View style={dibujar.contenedor}>
-      <Text style={dibujar.titulo}>
-        Hola Johitan
+    <View style={dibujar.Container}>
+      <Text style={dibujar.Title}>
+        HOLA BUENAS TARDES
       </Text>
-      <View style={dibujar.impcontenedor}>
-        <TextInput style={dibujar.txtimp} placeholder="Agregar"/>
-        <TouchableOpacity style={dibujar.boton}>
+      <View style={dibujar.InputContainer}>
+        <TextInput placeholder="Agregar" value={text} onChangeText={(t:string)=>{
+          setText(t)
+        }} style={dibujar.TextInput}/>
+        <TouchableOpacity style={dibujar.Buttonn} onPress={addTask}>
           <Text style={dibujar.wtext}>
             Enviar
           </Text>
         </TouchableOpacity>
       </View>
-      <View>
-        <FlatList data={Taareas} renderItem={renderItem}/>
+      <View >
+        <FlatList
+        renderItem={({item})=>
+        (<RenderItem
+        item={item}
+        markDone={markdone}
+        deleteFunction={deleteFunction}
+        />)}//para pasar props en react
+        data={tareas}
+        />
       </View>
     </View>
   )
-}
+  }

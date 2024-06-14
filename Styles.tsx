@@ -6,11 +6,12 @@ const dibujar=StyleSheet.create({
       padding:20
     },
     Title:{
+      padding:10,
       fontSize:20,
-      color:'#008BFF',
+      color:'#E6E1D2',
     },
     TextInput:{
-      borderColor:'#0019FF',
+      borderColor:'white',
       borderWidth:1,
       borderRadius:15,
       width:Dimensions.get("screen").width*0.6,
@@ -18,27 +19,27 @@ const dibujar=StyleSheet.create({
     },
     textt:{
       fontSize:16,
-      color:'#008BFF',
+      color:'white',
     },
     wtext:{
       fontSize:16,
-      color:'#FF0000',
+      color:'black',
     },
     InputContainer:{
       marginTop:20,
-      flexDirection:"row",
-      justifyContent:"space-between"
+      flexDirection:'row',
+      justifyContent:'space-between',
     },
     Buttonn:{
       width:Dimensions.get("screen").width*0.2,
-      backgroundColor:'#539AFF',
+      backgroundColor:'#E6E1D2',
       justifyContent:'center',
       alignItems:'center',
       borderRadius:15
     },
     taskcontainer:{
       paddingVertical:20,
-      borderBottomColor:'#8800FF',
+      borderBottomColor:'#E6E1D2',
       borderBottomWidth:10,
       flexDirection:'row',
       justifyContent:'space-between'
@@ -49,12 +50,16 @@ const dibujar=StyleSheet.create({
       textDecorationLine:"line-through"
     },
     removebutton:{
-      backgroundColor:'#8800FF',
+      backgroundColor:'#E6E1D2',
       justifyContent:'center',
       alignContent:'center',
       paddingHorizontal:15,
-      borderRadius:10
-  
+      borderRadius:10,
+    },
+    autor:{
+      fontSize:12,
+      padding:10,
+      color:'#E6E1D2',
     }
   })
   export default dibujar

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput,TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TextInput,TouchableOpacity, FlatList, Image} from "react-native";
 import dibujar from "./Styles";
 import RenderItem from "./RenderItem";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { json } from "react-router-dom";
 
 const tareas = [
 
@@ -53,10 +52,16 @@ export default function App(){
       estado:false,
       fecha: new Date()
     }
-    tmp.push(newTask)
-    setTask(tmp)
-    storeData(tmp)
-    setText('')
+
+    if(tareas.some(tarea => tarea.Titulo === newTask.Titulo)){
+      console.log("La tarea ya se encuentra registrada")
+    }
+    else{
+      tmp.push(newTask)
+      setTask(tmp)
+      storeData(tmp)
+      setText('')
+    }
   }
   const markdone=(tarea:Task)=>{
     const tmp = [...tareas]
@@ -76,10 +81,13 @@ export default function App(){
   return(
     <View style={dibujar.Container}>
       <Text style={dibujar.Title}>
-        HOLA BUENAS TARDES
+        Hola querido Usuario.
+      </Text>
+      <Text style={dibujar.Title}>
+        Te doy la bienvenida a tu gestor de tareas
       </Text>
       <View style={dibujar.InputContainer}>
-        <TextInput placeholder="Agregar" value={text} onChangeText={(t:string)=>{
+        <TextInput placeholder="Ingrese su tarea" value={text} onChangeText={(t:string)=>{
           setText(t)
         }} style={dibujar.TextInput}/>
         <TouchableOpacity style={dibujar.Buttonn} onPress={addTask}>
@@ -100,5 +108,6 @@ export default function App(){
         />
       </View>
     </View>
+    
   )
   }
